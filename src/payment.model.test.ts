@@ -220,15 +220,15 @@ describe("recurring payment model", () => {
     });
 
     it("should not let payment to have no name", async () => {
-      expect(
-        (await paymentModel.updateOne({ id: payment.id }, { name: "" }))?.name
-      ).to.not.equal("");
+      await expect(
+        paymentModel.updateOne({ id: payment.id }, { name: "" })
+      ).to.be.rejectedWith(/name/);
     });
 
     it("should not let payment to have no price", async () => {
-      expect(
-        (await paymentModel.updateOne({ id: payment.id }, { price: 0 }))?.price
-      ).to.not.equal(0);
+      await expect(
+        paymentModel.updateOne({ id: payment.id }, { price: 0 })
+      ).to.be.rejectedWith(/price/);
     });
 
     it("should not let payment to have extra fields", async () => {

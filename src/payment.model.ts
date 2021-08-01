@@ -28,6 +28,15 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
     };
   }
 
+  private validate(fields: Array<keyof RecurringPayment>, payment: any): void {
+    for (const field of fields) {
+      if (!this.validator[field]) continue;
+      if (!this.validator[field]?.(payment[field])) {
+        throw new Error(`invalid field: ${field}`);
+      }
+    }
+  }
+
   async create(
     payment: RecurringPayment
   ): Promise<RecurringPayment | undefined> {
@@ -35,12 +44,7 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
       payment
     ) as Array<keyof RecurringPayment>;
     //if field is not valid return
-    for (const field of fieldsToValidate) {
-      if (!this.validator[field]) continue;
-      if (!this.validator[field]?.(payment[field])) {
-        throw new Error(`invalid field: ${field}`);
-      }
-    }
+    this.validate(fieldsToValidate, payment);
     return await this.paymentCollection.insertOne({
       id: this.generateId(),
       name: payment.name,
@@ -80,12 +84,15 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
       "type",
       "startingDate",
     ];
-    for (const field of editableFields) {
-      const value = update[field];
-      if (value && this.validator[field]?.(value)) {
-        skimmedUpdate[field] = value;
+    for (const field of Object.keys(update) as Array<keyof RecurringPayment>) {
+      if (editableFields.includes(field)) {
+        skimmedUpdate[field] = update[field];
       }
     }
+    this.validate(
+      Object.keys(skimmedUpdate) as Array<keyof RecurringPayment>,
+      skimmedUpdate
+    );
     const payment = await this.paymentCollection.updateOne(
       filter,
       skimmedUpdate
