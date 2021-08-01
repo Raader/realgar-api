@@ -1,4 +1,4 @@
-import DataModel from "./data.model";
+import DataModel from "../db/data.model";
 import RecurringPayment from "./payment.interface";
 
 export default class RecurringPaymentService {

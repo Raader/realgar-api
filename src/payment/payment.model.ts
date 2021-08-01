@@ -1,7 +1,7 @@
 import RecurringPayment from "./payment.interface";
-import DataModel from "./data.model";
+import DataModel from "../db/data.model";
 import { isSubscriptionPlan } from "./subscription_plan.type";
-import DatabaseCollection from "./database_collection";
+import DatabaseCollection from "../db/database_collection";
 
 type GenerateId = (length?: number) => string;
 

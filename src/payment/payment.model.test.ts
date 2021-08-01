@@ -4,9 +4,9 @@ import { nanoid } from "nanoid";
 import RecurringPayment from "./payment.interface";
 import { RecurringPaymentModel } from "./payment.model";
 import lodash from "lodash";
-import DatabaseCollection from "./database_collection";
+import DatabaseCollection from "../db/database_collection";
 import chaiAsPromised from "chai-as-promised";
-import InMemoryDatabaseCollection from "./memory_collection";
+import InMemoryDatabaseCollection from "../db/memory_collection";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
