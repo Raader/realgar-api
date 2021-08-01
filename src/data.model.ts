@@ -9,4 +9,6 @@ export default interface DataModel<Type> {
     filter: Partial<Type>,
     update: Partial<Type>
   ) => Promise<Type | undefined>;
+  deleteOne: (filter: Partial<Type>) => Promise<void>;
+  deleteMany: (filter: Partial<Type>) => Promise<void>;
 }

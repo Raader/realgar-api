@@ -36,6 +36,18 @@ describe("recurring payment model", () => {
         const item = lodash.find(this.items, filter);
         return lodash.merge(item, update);
       },
+      deleteOne: async function (filter: any): Promise<void> {
+        const item = lodash.find(this.items, filter);
+        lodash.remove(this.items, (val) => val.id === item?.id);
+        return;
+      },
+      deleteMany: async function (filter: any): Promise<void> {
+        const items = lodash.filter(this.items, filter);
+        for (const item of items) {
+          lodash.remove(this.items, (val) => val.id === item?.id);
+        }
+        return;
+      },
     };
     paymentModel = new RecurringPaymentModel(dbCollection, nanoid);
   });
@@ -231,10 +243,59 @@ describe("recurring payment model", () => {
       ).to.be.rejectedWith(/price/);
     });
 
-    it("should not let payment to have extra fields", async () => {
+    it("should ignore extra fields", async () => {
       // @ts-ignore
       expect((await paymentModel.updateOne({}, { hello: "hello" })).hello).to.be
         .undefined;
+    });
+  });
+
+  describe("delete", () => {
+    beforeEach(() => {
+      dbCollection.items = [
+        {
+          id: "1",
+          name: "netflix subscription",
+          price: 24,
+          type: "monthly",
+          startingDate: new Date("2021-08-01"),
+        },
+        {
+          id: "2",
+          name: "netflix subscription",
+          price: 288,
+          type: "annual",
+          startingDate: new Date("2021-08-01"),
+        },
+        {
+          id: "3",
+          name: "spotify subscription",
+          price: 24,
+          type: "monthly",
+          startingDate: new Date("2021-08-01"),
+        },
+        {
+          id: "4",
+          name: "apple music subscription",
+          price: 18,
+          type: "monthly",
+          startingDate: new Date("2021-08-01"),
+        },
+      ];
+    });
+
+    it("should delete a payment by its id", async () => {
+      await expect(paymentModel.deleteOne({ id: "1" })).to.be.fulfilled;
+    });
+
+    it("should remove it from the collection", async () => {
+      await paymentModel.deleteOne({ id: "1" });
+      expect(dbCollection.findOne({ id: "1" })).to.be.empty;
+    });
+
+    it("should delete all payments with the same name", async () => {
+      await expect(paymentModel.deleteMany({ name: "netflix subscription" })).to
+        .be.fulfilled;
     });
   });
 });

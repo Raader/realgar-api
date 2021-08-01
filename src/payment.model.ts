@@ -99,4 +99,14 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
     );
     return payment;
   }
+
+  async deleteOne(filter: Partial<RecurringPayment>): Promise<void> {
+    await this.paymentCollection.deleteOne(filter);
+    return;
+  }
+
+  async deleteMany(filter: Partial<RecurringPayment>): Promise<void> {
+    await this.paymentCollection.deleteMany(filter);
+    return;
+  }
 }
