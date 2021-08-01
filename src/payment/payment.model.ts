@@ -20,7 +20,11 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
   ) {
     this.paymentCollection = paymentCollection;
     this.generateId = generateId;
-    this.validator = {
+    this.validator = this.generateValidator();
+  }
+
+  private generateValidator(): DataValidator<RecurringPayment> {
+    return {
       name: (val: any) => val && typeof val === "string" && val.length < 200,
       price: (val: any) => val && typeof val === "number",
       type: (val: any) => val && isSubscriptionPlan(val),
