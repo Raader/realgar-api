@@ -111,6 +111,16 @@ describe("recurring payment model", () => {
       // @ts-ignore
       expect((await paymentModel.create(payment)).extra).to.be.undefined;
     });
+
+    it("should not create a payment with missing field", async () => {
+      // @ts-ignore
+      payment = {
+        price: 24,
+        type: "monthly",
+        startingDate: new Date("2021-08-01"),
+      };
+      await expect(paymentModel.create(payment)).to.be.rejectedWith(/name/);
+    });
   });
 
   describe("read", () => {

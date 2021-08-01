@@ -40,9 +40,12 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
   async create(
     payment: RecurringPayment
   ): Promise<RecurringPayment | undefined> {
-    const fieldsToValidate: Array<keyof RecurringPayment> = Object.keys(
-      payment
-    ) as Array<keyof RecurringPayment>;
+    const fieldsToValidate: Array<keyof RecurringPayment> = [
+      "name",
+      "price",
+      "type",
+      "startingDate",
+    ];
     //if field is not valid return
     this.validate(fieldsToValidate, payment);
     return await this.paymentCollection.insertOne({
