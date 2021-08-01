@@ -6,6 +6,7 @@ import { RecurringPaymentModel } from "./payment.model";
 import lodash from "lodash";
 import DatabaseCollection from "./database_collection";
 import chaiAsPromised from "chai-as-promised";
+import InMemoryDatabaseCollection from "./memory_collection";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -18,37 +19,7 @@ describe("recurring payment model", () => {
   let paymentModel: RecurringPaymentModel;
 
   beforeEach(() => {
-    dbCollection = {
-      items: [],
-      insertOne: async function (document: any) {
-        this.items.push(document);
-        return document;
-      },
-      findOne: async function (filter: any): Promise<any> {
-        return lodash.find(this.items, filter);
-      },
-      find: async function (filter: any, opts: any): Promise<any[]> {
-        return lodash
-          .filter(this.items, filter)
-          .slice(opts.skip || 0, opts.skip + opts.limit || 10);
-      },
-      updateOne: async function (filter: any, update: any): Promise<any> {
-        const item = lodash.find(this.items, filter);
-        return lodash.merge(item, update);
-      },
-      deleteOne: async function (filter: any): Promise<void> {
-        const item = lodash.find(this.items, filter);
-        lodash.remove(this.items, (val) => val.id === item?.id);
-        return;
-      },
-      deleteMany: async function (filter: any): Promise<void> {
-        const items = lodash.filter(this.items, filter);
-        for (const item of items) {
-          lodash.remove(this.items, (val) => val.id === item?.id);
-        }
-        return;
-      },
-    };
+    dbCollection = new InMemoryDatabaseCollection<RecurringPayment>();
     paymentModel = new RecurringPaymentModel(dbCollection, nanoid);
   });
 
