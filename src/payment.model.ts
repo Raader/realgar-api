@@ -38,7 +38,7 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
     for (const field of fieldsToValidate) {
       if (!this.validator[field]) continue;
       if (!this.validator[field]?.(payment[field])) {
-        return;
+        throw new Error(`invalid field: ${field}`);
       }
     }
     return await this.paymentCollection.insertOne({
