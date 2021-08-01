@@ -14,7 +14,7 @@ export default class RecurringPaymentService {
     return this.paymentModel.create(resource);
   }
 
-  async read(skip: number, limit: number): Promise<RecurringPayment[]> {
+  async read(skip = 0, limit = 10): Promise<RecurringPayment[]> {
     return this.paymentModel.read({}, { skip, limit });
   }
 
