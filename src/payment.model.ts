@@ -1,16 +1,7 @@
 import RecurringPayment from "./payment.interface";
 import DataModel from "./data.model";
 import { isSubscriptionPlan } from "./subscription_plan.type";
-
-export interface DatabaseCollection<Type> {
-  insertOne: (document: Type) => Promise<Type>;
-  findOne: (filter: Partial<Type>) => Promise<Type>;
-  find: (
-    filter: Partial<Type>,
-    opts?: { limit?: number; skip?: number }
-  ) => Promise<Type[]>;
-  updateOne: (filter: Partial<Type>, update: Partial<Type>) => Promise<Type>;
-}
+import DatabaseCollection from "./database_collection";
 
 type GenerateId = (length?: number) => string;
 

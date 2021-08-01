@@ -2,8 +2,9 @@ import { expect } from "chai";
 import { describe } from "mocha";
 import { nanoid } from "nanoid";
 import RecurringPayment from "./payment.interface";
-import { DatabaseCollection, RecurringPaymentModel } from "./payment.model";
+import { RecurringPaymentModel } from "./payment.model";
 import lodash from "lodash";
+import DatabaseCollection from "./database_collection";
 
 describe("recurring payment model", () => {
   interface collection extends DatabaseCollection<RecurringPayment> {
