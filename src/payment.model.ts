@@ -9,13 +9,19 @@ export interface DatabaseCollection<Type> {
     filter: Partial<Type>,
     opts?: { limit?: number; skip?: number }
   ) => Promise<Type[]>;
+  updateOne: (filter: Partial<Type>, update: Partial<Type>) => Promise<Type>;
 }
 
 type GenerateId = (length?: number) => string;
 
+type DataValidator<Type> = {
+  [Property in keyof Type]: (val: any) => boolean;
+};
+
 export class RecurringPaymentModel implements DataModel<RecurringPayment> {
   paymentCollection: DatabaseCollection<RecurringPayment>;
   generateId: GenerateId;
+  validator: DataValidator<RecurringPayment>;
 
   constructor(
     paymentCollection: DatabaseCollection<RecurringPayment>,
@@ -23,14 +29,27 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
   ) {
     this.paymentCollection = paymentCollection;
     this.generateId = generateId;
+    this.validator = {
+      name: (val: any) => val && typeof val === "string" && val.length < 200,
+      price: (val: any) => val && typeof val === "number",
+      type: (val: any) => val && isSubscriptionPlan(val),
+      startingDate: (val: any) => val && val instanceof Date,
+    };
   }
 
   async create(
-    payment: Partial<RecurringPayment>
+    payment: RecurringPayment
   ): Promise<RecurringPayment | undefined> {
-    if (!payment.name || payment.name.length > 200) return;
-    if (!payment.price) return;
-    if (!payment.type || !isSubscriptionPlan(payment.type)) return;
+    const fieldsToValidate: Array<keyof RecurringPayment> = Object.keys(
+      payment
+    ) as Array<keyof RecurringPayment>;
+    //if field is not valid return
+    for (const field of fieldsToValidate) {
+      if (!this.validator[field]) continue;
+      if (!this.validator[field]?.(payment[field])) {
+        return;
+      }
+    }
     return await this.paymentCollection.insertOne({
       id: this.generateId(),
       name: payment.name,
@@ -57,5 +76,29 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
     filter: Partial<RecurringPayment>
   ): Promise<RecurringPayment | undefined> {
     return await this.paymentCollection.findOne(filter);
+  }
+
+  async updateOne(
+    filter: Partial<RecurringPayment>,
+    update: Partial<RecurringPayment>
+  ): Promise<RecurringPayment | undefined> {
+    const skimmedUpdate: any = {};
+    const editableFields: Array<keyof RecurringPayment> = [
+      "name",
+      "price",
+      "type",
+      "startingDate",
+    ];
+    for (const field of editableFields) {
+      const value = update[field];
+      if (value && this.validator[field]?.(value)) {
+        skimmedUpdate[field] = value;
+      }
+    }
+    const payment = await this.paymentCollection.updateOne(
+      filter,
+      skimmedUpdate
+    );
+    return payment;
   }
 }

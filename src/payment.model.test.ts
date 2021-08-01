@@ -27,6 +27,10 @@ describe("recurring payment model", () => {
           .filter(this.items, filter)
           .slice(opts.skip || 0, opts.skip + opts.limit || 10);
       },
+      updateOne: async function (filter: any, update: any): Promise<any> {
+        const item = lodash.find(this.items, filter);
+        return lodash.merge(item, update);
+      },
     };
     paymentModel = new RecurringPaymentModel(dbCollection, nanoid);
   });
@@ -82,6 +86,13 @@ describe("recurring payment model", () => {
       payment.name =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
       expect(await paymentModel.create(payment)).to.not.exist;
+    });
+
+    it("should ignore a payments extra fields", async () => {
+      // @ts-ignore
+      payment.extra = " ";
+      // @ts-ignore
+      expect((await paymentModel.create(payment)).extra).to.be.undefined;
     });
   });
 
@@ -157,6 +168,68 @@ describe("recurring payment model", () => {
       expect(
         (await paymentModel.read({}, { skip: 2, limit: 1 })).length
       ).to.equal(1);
+    });
+  });
+
+  describe("update", () => {
+    let payment: RecurringPayment;
+    beforeEach(() => {
+      payment = {
+        id: "213313215",
+        name: "netflix subscription",
+        price: 24,
+        type: "monthly",
+        startingDate: new Date("2021-08-01"),
+      };
+      dbCollection.items = [{ ...payment }];
+    });
+    it("should update a payments name by its id", async () => {
+      expect(
+        await paymentModel.updateOne({ id: payment.id }, { name: "spotify" })
+      );
+    });
+
+    it("should save changes of payment to database", async () => {
+      const updated = await paymentModel.updateOne(
+        { id: payment.id },
+        { name: "hello" }
+      );
+      expect(dbCollection.items[0]?.name).to.equal(updated?.name);
+    });
+
+    it("should not update a payments id", async () => {
+      expect(
+        (await paymentModel.updateOne({ id: payment.id }, { id: "mahmut" }))?.id
+      ).to.equal(payment.id);
+    });
+
+    it("should ignore id field when updating a payment", async () => {
+      expect(
+        (
+          await paymentModel.updateOne(
+            { id: payment.id },
+            { id: "mahmut", name: "spotify" }
+          )
+        )?.name
+      ).to.equal("spotify");
+    });
+
+    it("should not let payment to have no name", async () => {
+      expect(
+        (await paymentModel.updateOne({ id: payment.id }, { name: "" }))?.name
+      ).to.not.equal("");
+    });
+
+    it("should not let payment to have no price", async () => {
+      expect(
+        (await paymentModel.updateOne({ id: payment.id }, { price: 0 }))?.price
+      ).to.not.equal(0);
+    });
+
+    it("should not let payment to have extra fields", async () => {
+      // @ts-ignore
+      expect((await paymentModel.updateOne({}, { hello: "hello" })).hello).to.be
+        .undefined;
     });
   });
 });
