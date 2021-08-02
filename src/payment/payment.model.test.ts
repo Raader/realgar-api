@@ -76,11 +76,10 @@ describe("recurring payment model", () => {
       await expect(paymentModel.create(payment)).to.be.rejectedWith(/name/);
     });
 
-    it("should ignore a payments extra fields", async () => {
+    it("should not create a payments extra fields", async () => {
       // @ts-ignore
       payment.extra = " ";
-      // @ts-ignore
-      expect((await paymentModel.create(payment)).extra).to.be.undefined;
+      await expect(paymentModel.create(payment)).to.be.rejectedWith(/extra/);
     });
 
     it("should not create a payment with missing field", async () => {

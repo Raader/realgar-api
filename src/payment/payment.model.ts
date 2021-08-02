@@ -2,6 +2,7 @@ import RecurringPayment from "./payment.interface";
 import DataModel from "../db/data.model";
 import { isSubscriptionPlan } from "./subscription_plan.type";
 import DatabaseCollection from "../db/database_collection";
+import Validator from "../validation/validator";
 
 type GenerateId = (length?: number) => string;
 
@@ -10,9 +11,9 @@ type DataValidator<Type> = {
 };
 
 export class RecurringPaymentModel implements DataModel<RecurringPayment> {
-  paymentCollection: DatabaseCollection<RecurringPayment>;
+  private paymentCollection: DatabaseCollection<RecurringPayment>;
   generateId: GenerateId;
-  validator: DataValidator<RecurringPayment>;
+  private validator: Validator<RecurringPayment>;
 
   constructor(
     paymentCollection: DatabaseCollection<RecurringPayment>,
@@ -20,11 +21,7 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
   ) {
     this.paymentCollection = paymentCollection;
     this.generateId = generateId;
-    this.validator = this.generateValidator();
-  }
-
-  private generateValidator(): DataValidator<RecurringPayment> {
-    return {
+    this.validator = new Validator<RecurringPayment>({
       name: (val: any) => val && typeof val === "string" && val.length < 200,
       price: (val: any) => val && typeof val === "number",
       type: (val: any) => val && isSubscriptionPlan(val),
@@ -35,34 +32,17 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
         }
         return true;
       },
-    };
-  }
-
-  private validate(fields: Array<keyof RecurringPayment>, payment: any): void {
-    for (const field of fields) {
-      if (!this.validator[field]) continue;
-      if (!this.validator[field]?.(payment[field])) {
-        throw new Error(`invalid field: ${field}`);
-      }
-    }
+    });
   }
 
   async create(
     payment: RecurringPayment
   ): Promise<RecurringPayment | undefined> {
-    const fieldsToValidate: Array<keyof RecurringPayment> = [
-      "name",
-      "price",
-      "type",
-      "startingDate",
-    ];
     //if field is not valid return
-    this.validate(fieldsToValidate, payment);
+    this.validator.validate(payment);
     return await this.paymentCollection.insertOne({
+      ...payment,
       id: this.generateId(),
-      name: payment.name,
-      price: payment.price,
-      type: payment.type,
       startingDate: payment.startingDate
         ? new Date(payment.startingDate)
         : new Date(),
@@ -104,9 +84,10 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
         skimmedUpdate[field] = update[field];
       }
     }
-    this.validate(
-      Object.keys(skimmedUpdate) as Array<keyof RecurringPayment>,
-      skimmedUpdate
+    this.validator.validate(
+      skimmedUpdate,
+      false,
+      Object.keys(skimmedUpdate) as Array<keyof RecurringPayment>
     );
     const payment = await this.paymentCollection.updateOne(
       filter,
