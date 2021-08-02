@@ -28,7 +28,13 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
       name: (val: any) => val && typeof val === "string" && val.length < 200,
       price: (val: any) => val && typeof val === "number",
       type: (val: any) => val && isSubscriptionPlan(val),
-      startingDate: (val: any) => val && val instanceof Date,
+      startingDate: (val: any) => {
+        if (val) {
+          const date = new Date(val);
+          return !!date.getTime();
+        }
+        return true;
+      },
     };
   }
 
