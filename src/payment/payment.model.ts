@@ -63,7 +63,9 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
       name: payment.name,
       price: payment.price,
       type: payment.type,
-      startingDate: payment.startingDate || new Date(),
+      startingDate: payment.startingDate
+        ? new Date(payment.startingDate)
+        : new Date(),
     });
   }
 
