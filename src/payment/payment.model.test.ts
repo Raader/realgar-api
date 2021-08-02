@@ -181,9 +181,9 @@ describe("recurring payment model", () => {
       dbCollection.items = [{ ...payment }];
     });
     it("should update a payments name by its id", async () => {
-      expect(
-        await paymentModel.updateOne({ id: payment.id }, { name: "spotify" })
-      );
+      await expect(
+        paymentModel.updateOne({ id: payment.id }, { name: "spotify" })
+      ).to.be.fulfilled;
     });
 
     it("should save changes of payment to database", async () => {
@@ -195,20 +195,9 @@ describe("recurring payment model", () => {
     });
 
     it("should not update a payments id", async () => {
-      expect(
-        (await paymentModel.updateOne({ id: payment.id }, { id: "mahmut" }))?.id
-      ).to.equal(payment.id);
-    });
-
-    it("should ignore id field when updating a payment", async () => {
-      expect(
-        (
-          await paymentModel.updateOne(
-            { id: payment.id },
-            { id: "mahmut", name: "spotify" }
-          )
-        )?.name
-      ).to.equal("spotify");
+      await expect(
+        paymentModel.updateOne({ id: payment.id }, { id: "mahmut" })
+      ).to.be.rejectedWith(/id/);
     });
 
     it("should not let payment to have no name", async () => {
@@ -223,10 +212,12 @@ describe("recurring payment model", () => {
       ).to.be.rejectedWith(/price/);
     });
 
-    it("should ignore extra fields", async () => {
+    it("should not ignore extra fields", async () => {
       // @ts-ignore
-      expect((await paymentModel.updateOne({}, { hello: "hello" })).hello).to.be
-        .undefined;
+      await expect(
+        // @ts-ignore
+        paymentModel.updateOne({ id: payment.id }, { hello: "hello" })
+      ).to.be.rejectedWith(/hello/);
     });
   });
 

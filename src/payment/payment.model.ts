@@ -6,10 +6,6 @@ import Validator from "../validation/validator";
 
 type GenerateId = (length?: number) => string;
 
-type DataValidator<Type> = {
-  [Property in keyof Type]: (val: any) => boolean;
-};
-
 export class RecurringPaymentModel implements DataModel<RecurringPayment> {
   private paymentCollection: DatabaseCollection<RecurringPayment>;
   generateId: GenerateId;
@@ -72,27 +68,12 @@ export class RecurringPaymentModel implements DataModel<RecurringPayment> {
     filter: Partial<RecurringPayment>,
     update: Partial<RecurringPayment>
   ): Promise<RecurringPayment | undefined> {
-    const skimmedUpdate: any = {};
-    const editableFields: Array<keyof RecurringPayment> = [
-      "name",
-      "price",
-      "type",
-      "startingDate",
-    ];
-    for (const field of Object.keys(update) as Array<keyof RecurringPayment>) {
-      if (editableFields.includes(field)) {
-        skimmedUpdate[field] = update[field];
-      }
-    }
     this.validator.validate(
-      skimmedUpdate,
+      update,
       false,
-      Object.keys(skimmedUpdate) as Array<keyof RecurringPayment>
+      Object.keys(update) as Array<keyof RecurringPayment>
     );
-    const payment = await this.paymentCollection.updateOne(
-      filter,
-      skimmedUpdate
-    );
+    const payment = await this.paymentCollection.updateOne(filter, update);
     return payment;
   }
 
