@@ -5,8 +5,8 @@ import ValidationSchema from "../validation/validation_schema";
 import { nanoid } from "nanoid";
 
 export default class DatabaseModel<Type> implements DataModel<Type> {
-  collection: DatabaseCollection<Type>;
-  validator: Validator<Type>;
+  private collection: DatabaseCollection<Type>;
+  private validator: Validator<Type>;
 
   constructor(
     collection: DatabaseCollection<Type>,
