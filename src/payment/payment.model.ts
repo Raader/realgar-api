@@ -18,4 +18,14 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
       },
     });
   }
+
+  create(document: RecurringPayment): Promise<RecurringPayment | undefined> {
+    document = {
+      ...document,
+      startingDate: document.startingDate
+        ? new Date(document.startingDate)
+        : new Date(),
+    };
+    return super.create(document);
+  }
 }
