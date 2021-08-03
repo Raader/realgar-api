@@ -3,7 +3,7 @@ export default interface DataModel<Type> {
   readOne: (filter: Partial<Type>) => Promise<Type | undefined>;
   read: (
     filter: Partial<Type>,
-    opts: { limit?: number; skip?: number }
+    opts?: { limit?: number; skip?: number }
   ) => Promise<Type[]>;
   updateOne: (
     filter: Partial<Type>,

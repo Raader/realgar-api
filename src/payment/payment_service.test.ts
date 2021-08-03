@@ -3,7 +3,7 @@ import { describe, it } from "mocha";
 import chaiAsPromised from "chai-as-promised";
 import RecurringPaymentService from "./payment_service";
 import InMemoryDatabaseCollection from "../db/memory_collection";
-import { RecurringPaymentModel } from "./payment.model";
+import RecurringPaymentModel from "./payment.model";
 import { nanoid } from "nanoid";
 import RecurringPayment from "./payment.interface";
 
@@ -16,7 +16,7 @@ describe("recurring payment service", () => {
 
   beforeEach(() => {
     dbCollection = new InMemoryDatabaseCollection();
-    const paymentModel = new RecurringPaymentModel(dbCollection, nanoid);
+    const paymentModel = new RecurringPaymentModel(dbCollection);
     paymentService = new RecurringPaymentService(paymentModel);
   });
 

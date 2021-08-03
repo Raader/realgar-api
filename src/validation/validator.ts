@@ -1,8 +1,4 @@
-type ValidationSchema<Type> = {
-  [Property in keyof Type]: ValidationFunction;
-};
-
-type ValidationFunction = (val: any) => boolean;
+import ValidationSchema from "./validation_schema";
 
 export default class Validator<Type> {
   private schema: ValidationSchema<Type>;

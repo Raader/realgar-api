@@ -2,7 +2,7 @@ import chai from "chai";
 import { describe } from "mocha";
 import { nanoid } from "nanoid";
 import RecurringPayment from "./payment.interface";
-import { RecurringPaymentModel } from "./payment.model";
+import RecurringPaymentModel from "./payment.model";
 import lodash from "lodash";
 import DatabaseCollection from "../db/database_collection";
 import chaiAsPromised from "chai-as-promised";
@@ -20,7 +20,7 @@ describe("recurring payment model", () => {
 
   beforeEach(() => {
     dbCollection = new InMemoryDatabaseCollection<RecurringPayment>();
-    paymentModel = new RecurringPaymentModel(dbCollection, nanoid);
+    paymentModel = new RecurringPaymentModel(dbCollection);
   });
 
   describe("create", () => {
