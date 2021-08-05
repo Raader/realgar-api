@@ -1,15 +1,12 @@
-import DataModel from "../../db/data.model";
-import User from "../../user/user.interface";
 import OauthService from "../oauth_service";
 import axios from "axios";
+import UserService from "../../user/user_service";
 
 export default class GithubService extends OauthService {
-  authUrl: string;
-
   constructor(
     clientId: string,
     clientSecret: string,
-    userModel: DataModel<User>
+    userService: UserService
   ) {
     const exchangeCode = async (code: string) => {
       const response = await axios.post(
@@ -48,8 +45,11 @@ export default class GithubService extends OauthService {
       return { username: user.login, email: email };
     };
 
-    super(exchangeCode, fetchUserInfo, userModel);
-
-    this.authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=user:email`;
+    super(
+      exchangeCode,
+      fetchUserInfo,
+      userService,
+      `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=user:email`
+    );
   }
 }

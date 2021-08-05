@@ -1,10 +1,11 @@
 import { describe, it } from "mocha";
-import chai, { use } from "chai";
+import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import OauthService from "./oauth_service";
 import UserModel from "../user/user.model";
 import InMemoryDatabaseCollection from "../db/memory_collection";
 import User from "../user/user.interface";
+import UserService from "../user/user_service";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -31,12 +32,13 @@ describe("oauth service", () => {
     };
     userCollection = new InMemoryDatabaseCollection();
     const userModel = new UserModel(userCollection);
+    const userService = new UserService(userModel);
     oauthService = new OauthService(
       async (code: string) => {
         if (oauthUsers[code] === null || oauthUsers[code]) return code;
       },
       async (token: string) => oauthUsers[token],
-      userModel
+      userService
     );
   });
 
