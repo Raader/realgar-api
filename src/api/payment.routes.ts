@@ -3,48 +3,59 @@ import paymentService from "../payment";
 
 const router = express.Router();
 
-router.post("/payments", async (req, res, next) => {
+router.use((req, res, next) => {
+  const userId = req.session?.userId;
+  if (!userId) return res.status(401).end();
+  next();
+});
+
+router.post("/user/payments", async (req, res, next) => {
+  const userId = req.session?.userId;
   try {
-    const payment = await paymentService.create(req.body);
+    const payment = await paymentService.create({ ...req.body, userId });
     res.json(payment);
   } catch (error) {
     next(error);
   }
 });
 
-router.get("/payments", async (req, res, next) => {
+router.get("/user/payments", async (req, res, next) => {
+  const userId = req.session?.userId;
   try {
-    const payments = await paymentService.read();
+    const payments = await paymentService.read({ userId });
     res.json(payments);
   } catch (error) {
     next(error);
   }
 });
 
-router.get("/payments/:id", async (req, res, next) => {
+router.get("/user/payments/:id", async (req, res, next) => {
+  const userId = req.session?.userId;
   const { id } = req.params;
   try {
-    const payment = await paymentService.readById(id);
+    const payment = await paymentService.readOne({ id, userId });
     res.json(payment);
   } catch (error) {
     next(error);
   }
 });
 
-router.patch("/payments/:id", async (req, res, next) => {
+router.patch("/user/payments/:id", async (req, res, next) => {
+  const userId = req.session?.userId;
   const { id } = req.params;
   try {
-    const payment = await paymentService.updateById(id, req.body);
+    const payment = await paymentService.updateOne({ id, userId }, req.body);
     res.json(payment);
   } catch (error) {
     next(error);
   }
 });
 
-router.delete("/payments/:id", async (req, res, next) => {
+router.delete("/user/payments/:id", async (req, res, next) => {
+  const userId = req.session?.userId;
   const { id } = req.params;
   try {
-    const payment = await paymentService.deleteById(id);
+    const payment = await paymentService.deleteOne({ id, userId });
     res.json(payment);
   } catch (error) {
     next(error);
