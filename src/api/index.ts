@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieSession from "cookie-session";
 import paymentService from "../payment";
 import githubService from "../oauth/github";
 
@@ -7,6 +8,13 @@ import githubService from "../oauth/github";
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(
+  cookieSession({
+    name: "session",
+    keys: process.env.SESSION_SECRETS?.split(" "),
+    maxAge: Number(process.env.SESSION_MAX_AGE),
+  })
+);
 
 //routes
 app.post("/payments", async (req, res, next) => {
@@ -66,10 +74,17 @@ app.post("/oauth/github", async (req, res, next) => {
   try {
     if (typeof code !== "string") throw new Error("query params invalid");
     const user = await githubService.authenticate(code);
+    if (!user) throw new Error("authentication failed");
+    if (req.session) req.session.userId = user.id;
     res.json(user);
   } catch (error) {
     next(error);
   }
+});
+
+app.delete("/session", async (req, res, next) => {
+  req.session = null;
+  res.send("OK");
 });
 
 export default app;
