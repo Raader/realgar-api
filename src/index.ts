@@ -1,5 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import paymentService from "./payment";
+
+import githubService from "./oauth/github";
 
 const app = express();
 app.use(express.json());
@@ -47,6 +51,17 @@ app.delete("/payments/:id", async (req, res, next) => {
   try {
     const payment = await paymentService.deleteById(id);
     res.json(payment);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/oauth/github", async (req, res, next) => {
+  const { code } = req.query;
+  try {
+    if (typeof code !== "string") throw new Error("query params invalid");
+    const user = await githubService.authenticate(code);
+    res.json(user);
   } catch (error) {
     next(error);
   }
