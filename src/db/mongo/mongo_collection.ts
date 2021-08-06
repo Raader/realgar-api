@@ -1,4 +1,4 @@
-import { Collection, Db, OptionalId } from "mongodb";
+import { Collection, OptionalId } from "mongodb";
 import DatabaseCollection from "../database_collection";
 import MongoDatabase from "./mongo_database";
 
