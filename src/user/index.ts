@@ -1,11 +1,9 @@
-import InMemoryDatabaseCollection from "../db/memory_collection";
-import MongoCollection from "../db/mongo/mongo_collection";
-import mongoDatabase from "../db/mongo";
 import User from "./user.interface";
 import UserModel from "./user.model";
 import UserService from "./user_service";
+import createMongoCollection from "../db/mongo";
 
-const collection = new MongoCollection<User>(mongoDatabase, "users");
+const collection = createMongoCollection<User>("users");
 const userModel = new UserModel(collection);
 const userService = new UserService(userModel);
 export default userService;
