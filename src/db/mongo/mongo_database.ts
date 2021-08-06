@@ -1,7 +1,6 @@
 import { Collection, Db, MongoClient } from "mongodb";
-import mongoClient from "./mongo_client";
 
-export class MongoDatabase {
+export default class MongoDatabase {
   private db: Promise<Db>;
 
   constructor(client: MongoClient) {
@@ -15,6 +14,3 @@ export class MongoDatabase {
     return (await this.db).collection<Type>(name);
   }
 }
-
-const mongoDatabase = new MongoDatabase(mongoClient);
-export default mongoDatabase;

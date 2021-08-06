@@ -1,6 +1,6 @@
 import { Collection, Db, OptionalId } from "mongodb";
-import DatabaseCollection from "./database_collection";
-import { MongoDatabase } from "./mongo_database";
+import DatabaseCollection from "../database_collection";
+import MongoDatabase from "./mongo_database";
 
 export default class MongoCollection<Type> implements DatabaseCollection<Type> {
   collection: Promise<Collection<Type>>;
