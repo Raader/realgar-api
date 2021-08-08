@@ -23,7 +23,12 @@ app.use(oauthRoutes);
 
 app.get("/user", async (req, res, next) => {
   const userId = req.session?.userId;
-  res.json(await userService.readUserById(userId));
+  try {
+    const user = await userService.readUserById(userId);
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.delete("/session", async (req, res, next) => {
