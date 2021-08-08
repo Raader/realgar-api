@@ -5,9 +5,12 @@ import oauthRoutes from "./oauth.routes";
 import paymentRoutes from "./payment.routes";
 import userService from "../user";
 
-//middlewares
 const app = express();
-app.use(cors());
+//middlewares
+const clientURL = process.env.CLIENT_URL;
+const origin = [];
+if (clientURL) origin.push(clientURL);
+app.use(cors({ credentials: true, origin }));
 app.use(express.json());
 app.use(
   cookieSession({
@@ -25,6 +28,7 @@ app.get("/user", async (req, res, next) => {
   const userId = req.session?.userId;
   try {
     const user = await userService.readUserById(userId);
+    if (!user) return res.status(401).end();
     res.json(user);
   } catch (error) {
     next(error);
