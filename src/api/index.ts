@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieSession from "cookie-session";
 import oauthRoutes from "./oauth.routes";
 import paymentRoutes from "./payment.routes";
+import userService from "../user";
 
 //middlewares
 const app = express();
@@ -19,6 +20,11 @@ app.use(
 //routes
 app.use(paymentRoutes);
 app.use(oauthRoutes);
+
+app.get("/user", async (req, res, next) => {
+  const userId = req.session?.userId;
+  res.json(await userService.readUserById(userId));
+});
 
 app.delete("/session", async (req, res, next) => {
   req.session = null;
