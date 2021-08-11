@@ -48,7 +48,9 @@ export default class MongoCollection<Type> implements DatabaseCollection<Type> {
   ): Promise<Type | undefined> {
     const collection = await this.collection;
     const updateDoc = { $set: update };
-    const result = await collection.findOneAndUpdate(filter, updateDoc);
+    const result = await collection.findOneAndUpdate(filter, updateDoc, {
+      returnDocument: "after",
+    });
     if (result.ok) return result.value;
   }
 
