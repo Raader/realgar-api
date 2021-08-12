@@ -17,6 +17,7 @@ app.use(
     name: "session",
     keys: process.env.SESSION_SECRETS?.split(" "),
     maxAge: Number(process.env.SESSION_MAX_AGE),
+    secure: process.env.NODE_ENV === "production",
   })
 );
 
