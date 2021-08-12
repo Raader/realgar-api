@@ -6,6 +6,8 @@ import paymentRoutes from "./payment.routes";
 import userService from "../user";
 
 const app = express();
+
+app.set("trust proxy", 1);
 //middlewares
 const clientURL = process.env.CLIENT_URL;
 const origin = [];
@@ -17,6 +19,7 @@ app.use(
     name: "session",
     keys: process.env.SESSION_SECRETS?.split(" "),
     maxAge: Number(process.env.SESSION_MAX_AGE),
+    secureProxy: true,
   })
 );
 
