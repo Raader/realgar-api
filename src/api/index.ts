@@ -10,7 +10,7 @@ const app = express();
 const clientURL = process.env.CLIENT_URL;
 const origin = [];
 if (clientURL) origin.push(clientURL);
-app.use(cors({ credentials: true, origin }));
+app.use(cors({ credentials: true, origin, exposedHeaders: ["set-cookie"] }));
 app.use(express.json());
 app.use(
   cookieSession({
