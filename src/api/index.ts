@@ -20,7 +20,7 @@ app.use(
     keys: process.env.SESSION_SECRETS?.split(" "),
     maxAge: Number(process.env.SESSION_MAX_AGE),
     domain: process.env.CLIENT_DOMAIN,
-    secureProxy: process.env.NODE_ENV === "production",
+    secureProxy: !!process.env.COOKIE_SECURE,
   })
 );
 
