@@ -8,4 +8,5 @@ export default interface RecurringPayment {
   type: SubscriptionPlan;
   startingDate: Date;
   icon?: string;
+  currency?: string;
 }

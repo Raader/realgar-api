@@ -22,7 +22,13 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
       },
       icon: (val: any) => {
         if (val) {
-          return typeof val == "string" && val.length < 200;
+          return typeof val === "string" && val.length < 200;
+        }
+        return true;
+      },
+      currency: (val: any) => {
+        if (val) {
+          return typeof val === "string" && val.length === 3;
         }
         return true;
       },
@@ -35,6 +41,7 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
       startingDate: document.startingDate
         ? new Date(document.startingDate)
         : new Date(),
+      currency: document.currency ? document.currency.toUpperCase() : "USD",
     };
     return super.create(document);
   }
