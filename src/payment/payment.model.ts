@@ -20,6 +20,12 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
         }
         return true;
       },
+      icon: (val: any) => {
+        if (val) {
+          return typeof val == "string" && val.length < 200;
+        }
+        return true;
+      },
     });
   }
 

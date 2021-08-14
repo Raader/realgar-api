@@ -7,4 +7,5 @@ export default interface RecurringPayment {
   price: number;
   type: SubscriptionPlan;
   startingDate: Date;
+  icon?: string;
 }

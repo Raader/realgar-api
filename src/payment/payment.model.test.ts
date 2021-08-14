@@ -91,6 +91,17 @@ describe("recurring payment model", () => {
       };
       await expect(paymentModel.create(payment)).to.be.rejectedWith(/name/);
     });
+
+    it("should create a payment with an icon field", async () => {
+      payment.icon = "netflix";
+      await expect(paymentModel.create(payment)).to.be.fulfilled;
+    });
+
+    it("should not create a payment with an icon name longer than 200", async () => {
+      payment.icon =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+      await expect(paymentModel.create(payment)).to.be.rejectedWith(/icon/);
+    });
   });
 
   describe("read", () => {
