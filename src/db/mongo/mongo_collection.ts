@@ -1,8 +1,8 @@
 import { Collection, OptionalId } from "mongodb";
-import DatabaseCollection from "../database_collection";
+import DataCollection from "../data_collection";
 import MongoDatabase from "./mongo_database";
 
-export default class MongoCollection<Type> implements DatabaseCollection<Type> {
+export default class MongoCollection<Type> implements DataCollection<Type> {
   collection: Promise<Collection<Type>>;
 
   constructor(database: MongoDatabase, name: string) {

@@ -1,10 +1,10 @@
 import RecurringPayment from "./payment.interface";
 import { isSubscriptionPlan } from "./subscription_plan.type";
-import DatabaseCollection from "../db/database_collection";
+import DataCollection from "../db/data_collection";
 import DatabaseModel from "../db/database_model";
 
 export default class RecurringPaymentModel extends DatabaseModel<RecurringPayment> {
-  constructor(collection: DatabaseCollection<RecurringPayment>) {
+  constructor(collection: DataCollection<RecurringPayment>) {
     super(collection, {
       userId: (val: any) => {
         if (val) return typeof val === "string";

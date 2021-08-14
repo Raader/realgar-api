@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import RecurringPayment from "./payment.interface";
 import RecurringPaymentModel from "./payment.model";
 import lodash from "lodash";
-import DatabaseCollection from "../db/database_collection";
+import DataCollection from "../db/data_collection";
 import chaiAsPromised from "chai-as-promised";
 import InMemoryDatabaseCollection from "../db/memory_collection";
 
@@ -12,7 +12,7 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe("recurring payment model", () => {
-  interface collection extends DatabaseCollection<RecurringPayment> {
+  interface collection extends DataCollection<RecurringPayment> {
     items: RecurringPayment[];
   }
   let dbCollection: collection;

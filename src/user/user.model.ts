@@ -1,10 +1,10 @@
-import DatabaseCollection from "../db/database_collection";
+import DataCollection from "../db/data_collection";
 import DatabaseModel from "../db/database_model";
 import User from "./user.interface";
 import bcrypt from "bcrypt";
 
 export default class UserModel extends DatabaseModel<User> {
-  constructor(collection: DatabaseCollection<User>) {
+  constructor(collection: DataCollection<User>) {
     super(collection, {
       username: (val) => val && typeof val === "string" && val.length < 20,
       email: (val) => val && typeof val === "string" && val.length < 100,
@@ -22,20 +22,19 @@ export default class UserModel extends DatabaseModel<User> {
     return super.create(user);
   }
 
-  async read(filter: Partial<User>): Promise<User[]>{
+  async read(filter: Partial<User>): Promise<User[]> {
     const users = await super.read(filter);
     //exclude password from read operations
-    for(const user of users) {
+    for (const user of users) {
       delete user?.password;
     }
     return users;
   }
 
-  async readOne(filter: Partial<User>): Promise<User |undefined>{
+  async readOne(filter: Partial<User>): Promise<User | undefined> {
     const user = await super.readOne(filter);
     //exclude password from read operations
     delete user?.password;
     return user;
   }
-
 }

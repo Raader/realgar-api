@@ -1,8 +1,5 @@
 import chai from "chai";
 import { describe, it } from "mocha";
-import { nanoid } from "nanoid";
-import lodash from "lodash";
-import DatabaseCollection from "../db/database_collection";
 import chaiAsPromised from "chai-as-promised";
 import InMemoryDatabaseCollection from "../db/memory_collection";
 import UserModel from "./user.model";
@@ -84,8 +81,10 @@ describe("user model", () => {
     });
 
     it("should exclude passwords when reading by id", async () => {
-      await expect(userModel.readOne({id:"1"})).to.eventually.not.have.property("password");
-    })
+      await expect(
+        userModel.readOne({ id: "1" })
+      ).to.eventually.not.have.property("password");
+    });
   });
   describe("update", () => {
     let user: User;

@@ -1,8 +1,8 @@
 import lodash from "lodash";
-import DatabaseCollection from "./database_collection";
+import DataCollection from "./data_collection";
 
 export default class InMemoryDatabaseCollection<Type>
-  implements DatabaseCollection<Type>
+  implements DataCollection<Type>
 {
   items: any[];
   constructor() {

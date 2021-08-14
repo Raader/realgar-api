@@ -1,15 +1,15 @@
 import DataModel from "./data.model";
-import DatabaseCollection from "./database_collection";
+import DataCollection from "./data_collection";
 import Validator from "../validation/validator";
 import ValidationSchema from "../validation/validation_schema";
 import { nanoid } from "nanoid";
 
 export default class DatabaseModel<Type> implements DataModel<Type> {
-  private collection: DatabaseCollection<Type>;
+  private collection: DataCollection<Type>;
   private validator: Validator<Type>;
 
   constructor(
-    collection: DatabaseCollection<Type>,
+    collection: DataCollection<Type>,
     schema: ValidationSchema<Type>
   ) {
     this.collection = collection;

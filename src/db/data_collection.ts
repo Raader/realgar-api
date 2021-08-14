@@ -1,4 +1,4 @@
-export default interface DatabaseCollection<Type> {
+export default interface DataCollection<Type> {
   insertOne: (document: Type) => Promise<Type | undefined>;
   findOne: (filter: Partial<Type>) => Promise<Type | undefined>;
   find: (
