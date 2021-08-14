@@ -1,4 +1,4 @@
-import DataModel from "../db/data.model";
+import DataModel from "../db/data_model";
 import User from "./user.interface";
 
 export default class UserService {

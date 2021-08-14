@@ -1,4 +1,4 @@
-import DataModel from "./data.model";
+import DataModel from "./data_model";
 import DataCollection from "./data_collection";
 import Validator from "../validation/validator";
 import ValidationSchema from "../validation/validation_schema";
