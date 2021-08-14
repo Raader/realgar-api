@@ -1,9 +1,7 @@
 import chai from "chai";
 import { describe } from "mocha";
-import { nanoid } from "nanoid";
 import RecurringPayment from "./payment.interface";
 import RecurringPaymentModel from "./payment.model";
-import lodash from "lodash";
 import DataCollection from "../db/data_collection";
 import chaiAsPromised from "chai-as-promised";
 import InMemoryDatabaseCollection from "../db/memory_collection";

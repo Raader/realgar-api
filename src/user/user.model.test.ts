@@ -87,7 +87,6 @@ describe("user model", () => {
     });
   });
   describe("update", () => {
-    let user: User;
     beforeEach(() => {
       const user = {
         id: "0",

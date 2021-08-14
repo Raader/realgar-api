@@ -4,7 +4,6 @@ import chaiAsPromised from "chai-as-promised";
 import RecurringPaymentService from "./payment_service";
 import InMemoryDatabaseCollection from "../db/memory_collection";
 import RecurringPaymentModel from "./payment.model";
-import { nanoid } from "nanoid";
 import RecurringPayment from "./payment.interface";
 
 chai.use(chaiAsPromised);
