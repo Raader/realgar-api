@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieSession from "cookie-session";
 import oauthRoutes from "./oauth.routes";
+import authRoutes from "./auth.routes";
 import paymentRoutes from "./payment.routes";
 import userService from "../user";
 
@@ -27,6 +28,7 @@ app.use(
 //routes
 app.use(paymentRoutes);
 app.use(oauthRoutes);
+app.use(authRoutes);
 
 app.get("/user", async (req, res, next) => {
   const userId = req.session?.userId;
