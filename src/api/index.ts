@@ -44,4 +44,10 @@ app.delete("/session", async (req, res, next) => {
   res.send("OK");
 });
 
+app.use((err: any, req: any, res: any, next: any) => {
+  if (err.errors) {
+    res.status(400).json({ errors: err.errors });
+  } else next(err);
+});
+
 export default app;
