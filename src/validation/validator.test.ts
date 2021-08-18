@@ -48,4 +48,15 @@ describe("validator", () => {
       expect(error?.errors[1]).property("field").to.equal("job");
     }
   });
+
+  it("should throw when updating name", () => {
+    expect(() =>
+      validator.validate(
+        { name: "mahmut", job: "torna" },
+        false,
+        ["job"],
+        ["job"]
+      )
+    ).to.throw(ValidationError);
+  });
 });

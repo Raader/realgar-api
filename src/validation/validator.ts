@@ -13,10 +13,11 @@ export default class Validator<Type> {
   validate(
     obj: Partial<Type>,
     ignoreExtra = false,
-    fieldsToValidate = this.allFields
+    fieldsToValidate = this.allFields,
+    fieldsToCheck = this.allFields
   ): void {
     if (!ignoreExtra) {
-      const extraField = this.hasExtraFields(obj);
+      const extraField = this.hasExtraFields(obj, fieldsToCheck);
       if (extraField)
         throw new ValidationError(
           [
