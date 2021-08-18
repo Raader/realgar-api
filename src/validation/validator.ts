@@ -1,3 +1,4 @@
+import ValidationError, { FieldError } from "./validation_error";
 import ValidationSchema from "./validation_schema";
 
 export default class Validator<Type> {
@@ -17,14 +18,32 @@ export default class Validator<Type> {
     if (!ignoreExtra) {
       const extraField = this.hasExtraFields(obj);
       if (extraField)
-        throw new Error(`field ${extraField} does not exist in schema`);
+        throw new ValidationError(
+          [
+            {
+              message: `field ${extraField} does not exist in schema`,
+              field: typeof extraField === "string" ? extraField : "",
+            },
+          ],
+          `field ${extraField} does not exist in schema`
+        );
     }
+    const errors: FieldError[] = [];
     for (const field of fieldsToValidate) {
       const validationFn = this.schema[field];
       if (!validationFn)
-        throw new Error(`field ${field} does not exist in schema`);
+        errors.push({
+          message: `field ${field} does not exist in schema`,
+          field: typeof field === "string" ? field : "",
+        });
       else if (!validationFn(obj[field]))
-        throw new Error(`invalid field: ${field}`);
+        errors.push({
+          message: `invalid field: ${field}`,
+          field: typeof field === "string" ? field : "",
+        });
+    }
+    if (errors.length > 0) {
+      throw new ValidationError(errors, errors[0].message);
     }
   }
 
