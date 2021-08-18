@@ -11,6 +11,18 @@ export default class RecurringPaymentService {
   async create(
     resource: RecurringPayment
   ): Promise<RecurringPayment | undefined> {
+    //check payment count to not let a user create more than 100 payment
+    if (
+      resource.userId &&
+      (
+        await this.paymentModel.read(
+          { userId: resource.userId },
+          { limit: 100 }
+        )
+      ).length >= 100
+    ) {
+      throw new Error("payment creating limit has been reached");
+    }
     return this.paymentModel.create(resource);
   }
 

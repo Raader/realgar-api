@@ -77,4 +77,25 @@ describe("recurring payment service", () => {
     ];
     await expect(paymentService.deleteById("1")).to.be.fulfilled;
   });
+
+  it("should not let a user have more than 100 payments", async () => {
+    for (let i = 0; i < 100; i++) {
+      dbCollection.items.push({
+        userId: "1",
+        name: "netflix",
+        price: 12,
+        type: "monthly",
+        startingDate: new Date(),
+      });
+    }
+    await expect(
+      paymentService.create({
+        userId: "1",
+        name: "netflix",
+        price: 12,
+        type: "monthly",
+        startingDate: new Date(),
+      })
+    ).to.be.rejectedWith(/limit/);
+  });
 });
