@@ -33,8 +33,6 @@ export default class UserModel extends DatabaseModel<User> {
 
   async readOne(filter: Partial<User>): Promise<User | undefined> {
     const user = await super.readOne(filter);
-    //exclude password from read operations
-    delete user?.password;
     return user;
   }
 }

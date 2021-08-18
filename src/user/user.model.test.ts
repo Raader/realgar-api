@@ -79,12 +79,6 @@ describe("user model", () => {
         .to.eventually.property("length")
         .to.equal(4);
     });
-
-    it("should exclude passwords when reading by id", async () => {
-      await expect(
-        userModel.readOne({ id: "1" })
-      ).to.eventually.not.have.property("password");
-    });
   });
   describe("update", () => {
     beforeEach(() => {
