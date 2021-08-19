@@ -35,6 +35,27 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
     });
   }
 
+  calculateLastPayment(payment: RecurringPayment, currentDate?: Date): Date {
+    currentDate = currentDate || new Date();
+    const monthInMilliSeconds = 30 * 24 * 60 * 60 * 1000;
+    const yearInMilliSeconds = 365 * 24 * 60 * 60 * 1000;
+
+    const date = new Date(payment.startingDate);
+    while (date) {
+      if (payment.type === "monthly") {
+        if (date.getTime() + monthInMilliSeconds <= currentDate.getTime()) {
+          date.setDate(date.getDate() + 30);
+        } else break;
+      } else {
+        if (date.getTime() + yearInMilliSeconds <= currentDate.getTime()) {
+          date.setFullYear(date.getFullYear() + 1);
+        } else break;
+      }
+    }
+
+    return date;
+  }
+
   create(document: RecurringPayment): Promise<RecurringPayment | undefined> {
     document = {
       ...document,
