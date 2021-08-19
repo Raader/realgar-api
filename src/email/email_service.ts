@@ -1,10 +1,7 @@
+import Email from "./email_interface";
+
 export interface Transporter {
-  sendMail: (opts: {
-    from?: string;
-    to?: string;
-    subject?: string;
-    text?: string;
-  }) => Promise<void>;
+  sendMail: (opts: Partial<Email>) => Promise<void>;
 }
 
 export default class EmailService {
@@ -14,12 +11,7 @@ export default class EmailService {
     this.transporter = transporter;
   }
 
-  async sendMail(mail: {
-    from: string;
-    to: string;
-    subject: string;
-    text: string;
-  }): Promise<void> {
+  async sendMail(mail: Email): Promise<void> {
     return await this.transporter.sendMail(mail);
   }
 }
