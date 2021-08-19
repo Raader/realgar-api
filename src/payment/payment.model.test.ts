@@ -306,4 +306,54 @@ describe("recurring payment model", () => {
         .be.fulfilled;
     });
   });
+
+  describe("virtual fields", () => {
+    it("should calculate last payment correct on monthly payment", () => {
+      const payment: RecurringPayment = {
+        name: "netflix subscription",
+        price: 24,
+        type: "monthly",
+        startingDate: new Date("2021-07-08"),
+      };
+      const lastPaymentDate = new Date("2021-08-07");
+
+      const currentDate = new Date("2021-08-19");
+
+      expect(
+        paymentModel.calculateLastPayment(payment, currentDate).toDateString()
+      ).to.equal(lastPaymentDate.toDateString());
+    });
+
+    it("should calculate last payment correct on annual payment", () => {
+      const payment: RecurringPayment = {
+        name: "netflix subscription",
+        price: 24,
+        type: "annual",
+        startingDate: new Date("2020-08-19"),
+      };
+      const lastPaymentDate = new Date("2021-08-19");
+
+      const currentDate = new Date("2021-08-20");
+
+      expect(
+        paymentModel.calculateLastPayment(payment, currentDate).toDateString()
+      ).to.equal(lastPaymentDate.toDateString());
+    });
+
+    it("should calculate last payment correnct multiple months apart on monthly payment", () => {
+      const payment: RecurringPayment = {
+        name: "netflix subscription",
+        price: 24,
+        type: "monthly",
+        startingDate: new Date("2021-04-19"),
+      };
+      const lastPaymentDate = new Date("2021-08-17");
+
+      const currentDate = new Date("2021-08-19");
+
+      expect(
+        paymentModel.calculateLastPayment(payment, currentDate).toDateString()
+      ).to.equal(lastPaymentDate.toDateString());
+    });
+  });
 });
