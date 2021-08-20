@@ -56,14 +56,53 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
     return date;
   }
 
-  create(document: RecurringPayment): Promise<RecurringPayment | undefined> {
-    document = {
-      ...document,
-      startingDate: document.startingDate
-        ? new Date(document.startingDate)
+  async create(
+    payment: RecurringPayment
+  ): Promise<RecurringPayment | undefined> {
+    payment = {
+      ...payment,
+      startingDate: payment.startingDate
+        ? new Date(payment.startingDate)
         : new Date(),
-      currency: document.currency ? document.currency.toUpperCase() : "USD",
+      currency: payment.currency ? payment.currency.toUpperCase() : "USD",
     };
-    return super.create(document);
+    const document = await super.create(payment);
+    if (document) {
+      return { ...document, lastDate: this.calculateLastPayment(document) };
+    }
+  }
+
+  async read(
+    filter: Partial<RecurringPayment>,
+    opts?: { limit?: number; skip?: number }
+  ): Promise<RecurringPayment[]> {
+    const documents = await super.read(filter, opts);
+
+    return documents.map((document) => ({
+      ...document,
+      lastDate: this.calculateLastPayment(document),
+    }));
+  }
+
+  async readOne(
+    filter: Partial<RecurringPayment>
+  ): Promise<RecurringPayment | undefined> {
+    const document = await super.readOne(filter);
+    if (document) {
+      document.lastDate = this.calculateLastPayment(document);
+    }
+    return document;
+  }
+
+  async updateOne(
+    filter: Partial<RecurringPayment>,
+    update: Partial<RecurringPayment>
+  ): Promise<RecurringPayment | undefined> {
+    const document = await super.updateOne(filter, update);
+    if (document)
+      return {
+        ...document,
+        lastDate: this.calculateLastPayment(document),
+      };
   }
 }
