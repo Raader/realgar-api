@@ -10,4 +10,5 @@ export default interface RecurringPayment {
   icon?: string;
   currency?: string;
   lastDate?: Date;
+  nextDate?: Date;
 }

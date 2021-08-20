@@ -79,9 +79,12 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
       currency: payment.currency ? payment.currency.toUpperCase() : "USD",
     };
     const document = await super.create(payment);
+
     if (document) {
-      return { ...document, lastDate: this.calculateLastPayment(document) };
+      document.lastDate = this.calculateLastPayment(document);
+      document.nextDate = this.calculateNextPayment(document);
     }
+    return document;
   }
 
   async read(
@@ -90,10 +93,11 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
   ): Promise<RecurringPayment[]> {
     const documents = await super.read(filter, opts);
 
-    return documents.map((document) => ({
-      ...document,
-      lastDate: this.calculateLastPayment(document),
-    }));
+    documents.forEach((document) => {
+      document.lastDate = this.calculateLastPayment(document);
+      document.nextDate = this.calculateNextPayment(document);
+    });
+    return documents;
   }
 
   async readOne(
@@ -102,6 +106,7 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
     const document = await super.readOne(filter);
     if (document) {
       document.lastDate = this.calculateLastPayment(document);
+      document.nextDate = this.calculateNextPayment(document);
     }
     return document;
   }
@@ -111,10 +116,10 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
     update: Partial<RecurringPayment>
   ): Promise<RecurringPayment | undefined> {
     const document = await super.updateOne(filter, update);
-    if (document)
-      return {
-        ...document,
-        lastDate: this.calculateLastPayment(document),
-      };
+    if (document) {
+      document.lastDate = this.calculateLastPayment(document);
+      document.nextDate = this.calculateNextPayment(document);
+    }
+    return document;
   }
 }
