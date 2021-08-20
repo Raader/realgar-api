@@ -56,6 +56,18 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
     return date;
   }
 
+  calculateNextPayment(payment: RecurringPayment): Date {
+    if (payment.lastDate) {
+      const date = new Date(payment.lastDate);
+      if (payment.type === "monthly") {
+        date.setDate(date.getDate() + 30);
+      } else {
+        date.setFullYear(date.getFullYear() + 1);
+      }
+      return date;
+    } else throw new Error("can't calculate next payment without last date");
+  }
+
   async create(
     payment: RecurringPayment
   ): Promise<RecurringPayment | undefined> {
