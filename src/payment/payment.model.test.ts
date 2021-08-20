@@ -128,6 +128,12 @@ describe("recurring payment model", () => {
         .eventually.property("currency")
         .to.equal("USD");
     });
+
+    it("should have last payment date on create", async () => {
+      await expect(paymentModel.create(payment)).to.eventually.have.property(
+        "lastDate"
+      );
+    });
   });
 
   describe("read", () => {
@@ -203,6 +209,19 @@ describe("recurring payment model", () => {
         (await paymentModel.read({}, { skip: 2, limit: 1 })).length
       ).to.equal(1);
     });
+
+    it("should have last payment date on readOne", async () => {
+      await expect(
+        paymentModel.readOne({ id: "1" })
+      ).to.eventually.have.property("lastDate");
+    });
+
+    it("should have last payment date on read", async () => {
+      const payments = await paymentModel.read({});
+      for (const payment of payments) {
+        expect(payment).to.have.property("lastDate");
+      }
+    });
   });
 
   describe("update", () => {
@@ -255,6 +274,12 @@ describe("recurring payment model", () => {
         // @ts-ignore
         paymentModel.updateOne({ id: payment.id }, { hello: "hello" })
       ).to.be.rejectedWith(/hello/);
+    });
+
+    it("should have last payment date on update", async () => {
+      await expect(
+        paymentModel.updateOne({ id: payment.id }, { name: "spotify" })
+      ).to.eventually.have.property("lastDate");
     });
   });
 
