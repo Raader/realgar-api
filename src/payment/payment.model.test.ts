@@ -380,5 +380,41 @@ describe("recurring payment model", () => {
         paymentModel.calculateLastPayment(payment, currentDate).toDateString()
       ).to.equal(lastPaymentDate.toDateString());
     });
+
+    it("should calculate next payment correct on monthly payment", () => {
+      const payment: RecurringPayment = {
+        name: "netflix subscription",
+        price: 24,
+        type: "monthly",
+        startingDate: new Date("2021-07-08"),
+        lastDate: new Date("2021-08-07"),
+      };
+
+      const currentDate = new Date("2021-08-19");
+
+      const nextPayment = new Date("2021-09-06");
+
+      expect(
+        paymentModel.calculateNextPayment(payment).toDateString()
+      ).to.equal(nextPayment.toDateString());
+    });
+
+    it("should calculate next payment correct on annual payment", () => {
+      const payment: RecurringPayment = {
+        name: "netflix subscription",
+        price: 24,
+        type: "annual",
+        startingDate: new Date("2021-07-08"),
+        lastDate: new Date("2021-08-07"),
+      };
+
+      const currentDate = new Date("2021-08-19");
+
+      const nextPayment = new Date("2022-08-07");
+
+      expect(
+        paymentModel.calculateNextPayment(payment).toDateString()
+      ).to.equal(nextPayment.toDateString());
+    });
   });
 });
