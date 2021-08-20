@@ -134,6 +134,12 @@ describe("recurring payment model", () => {
         "lastDate"
       );
     });
+
+    it("should have next payment date on create", async () => {
+      await expect(paymentModel.create(payment)).to.eventually.have.property(
+        "nextDate"
+      );
+    });
   });
 
   describe("read", () => {
@@ -216,10 +222,23 @@ describe("recurring payment model", () => {
       ).to.eventually.have.property("lastDate");
     });
 
+    it("should have next payment date on readOne", async () => {
+      await expect(
+        paymentModel.readOne({ id: "1" })
+      ).to.eventually.have.property("nextDate");
+    });
+
     it("should have last payment date on read", async () => {
       const payments = await paymentModel.read({});
       for (const payment of payments) {
         expect(payment).to.have.property("lastDate");
+      }
+    });
+
+    it("should have next payment date on read", async () => {
+      const payments = await paymentModel.read({});
+      for (const payment of payments) {
+        expect(payment).to.have.property("nextDate");
       }
     });
   });
@@ -280,6 +299,12 @@ describe("recurring payment model", () => {
       await expect(
         paymentModel.updateOne({ id: payment.id }, { name: "spotify" })
       ).to.eventually.have.property("lastDate");
+    });
+
+    it("should have next payment date on update", async () => {
+      await expect(
+        paymentModel.updateOne({ id: payment.id }, { name: "spotify" })
+      ).to.eventually.have.property("nextDate");
     });
   });
 
