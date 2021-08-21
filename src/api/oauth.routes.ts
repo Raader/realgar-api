@@ -4,7 +4,7 @@ import githubService from "../oauth/github";
 const router = express.Router();
 
 router.get("/oauth/github", async (req, res, next) => {
-  res.send(githubService.authorizeURL);
+  res.redirect(githubService.authorizeURL);
 });
 
 router.post("/oauth/github", async (req, res, next) => {
