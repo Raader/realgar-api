@@ -22,7 +22,11 @@ router.post("/user/payments", authorize, async (req, res, next) => {
 router.get("/user/payments", authorize, async (req, res, next) => {
   const userId = req.session?.userId;
   try {
-    const payments = await paymentService.read({ userId });
+    const payments = await paymentService.read(
+      { userId },
+      Number(req.query?.skip),
+      Number(req.query?.limit)
+    );
     res.json(payments);
   } catch (error) {
     next(error);
