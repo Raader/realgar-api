@@ -32,6 +32,13 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
         }
         return true;
       },
+      lastNotified: (val: any) => {
+        if (val) {
+          const date = new Date(val);
+          return !!date.getTime();
+        }
+        return true;
+      },
     });
   }
 

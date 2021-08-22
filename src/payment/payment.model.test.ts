@@ -306,6 +306,19 @@ describe("recurring payment model", () => {
         paymentModel.updateOne({ id: payment.id }, { name: "spotify" })
       ).to.eventually.have.property("nextDate");
     });
+
+    it("should update lastNotified field", async () => {
+      await expect(
+        paymentModel.updateOne({ id: payment.id }, { lastNotified: new Date() })
+      ).to.eventually.have.property("lastNotified");
+    });
+
+    it("should not update lastNotified field if value is not date", async () => {
+      await expect(
+        // @ts-ignore
+        paymentModel.updateOne({ id: payment.id }, { lastNotified: "mahmut" })
+      ).to.be.rejectedWith(/lastNotified/);
+    });
   });
 
   describe("delete", () => {

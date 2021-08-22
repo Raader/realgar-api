@@ -11,4 +11,5 @@ export default interface RecurringPayment {
   currency?: string;
   lastDate?: Date;
   nextDate?: Date;
+  lastNotified?: Date;
 }
