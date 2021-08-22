@@ -19,4 +19,12 @@ export default class UserService {
   async readUserById(id: string): Promise<User | undefined> {
     return this.userModel.readOne({ id });
   }
+
+  async forEach(
+    fn: (document: User) => void,
+    filter?: Partial<User>,
+    step?: number
+  ): Promise<void> {
+    return this.userModel.forEach(fn, filter, step);
+  }
 }
