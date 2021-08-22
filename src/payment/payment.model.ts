@@ -129,4 +129,20 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
     }
     return document;
   }
+
+  async forEach(
+    fn: (document: RecurringPayment) => void,
+    filter?: Partial<RecurringPayment>,
+    step?: number
+  ): Promise<void> {
+    super.forEach(
+      (document) => {
+        document.lastDate = this.calculateLastPayment(document);
+        document.nextDate = this.calculateNextPayment(document);
+        fn(document);
+      },
+      filter,
+      step
+    );
+  }
 }
