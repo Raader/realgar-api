@@ -11,4 +11,9 @@ export default interface DataModel<Type> {
   ) => Promise<Type | undefined>;
   deleteOne: (filter: Partial<Type>) => Promise<void>;
   deleteMany: (filter: Partial<Type>) => Promise<void>;
+  forEach: (
+    fn: (document: Type) => void,
+    filter?: Partial<Type>,
+    step?: number
+  ) => Promise<void>;
 }

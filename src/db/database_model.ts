@@ -60,4 +60,21 @@ export default class DatabaseModel<Type> implements DataModel<Type> {
     await this.collection.deleteMany(filter);
     return;
   }
+
+  async forEach(
+    fn: (document: Type) => void,
+    filter = {},
+    step = 10
+  ): Promise<void> {
+    const limit = step;
+    let skip = 0;
+    let documents = await this.collection.find(filter, { limit, skip });
+    while (documents?.length > 0) {
+      for (const document of documents) {
+        fn(document);
+      }
+      skip += step;
+      documents = await this.collection.find(filter, { limit, skip });
+    }
+  }
 }
