@@ -61,4 +61,12 @@ export default class RecurringPaymentService {
   async deleteOne(filter: Partial<RecurringPayment>): Promise<void> {
     return this.paymentModel.deleteOne(filter);
   }
+
+  async forEach(
+    fn: (document: RecurringPayment) => void,
+    filter?: Partial<RecurringPayment>,
+    step?: number
+  ): Promise<void> {
+    return this.paymentModel.forEach(fn, filter, step);
+  }
 }
