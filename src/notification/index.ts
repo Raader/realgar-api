@@ -19,7 +19,9 @@ function handleInterval() {
       to: user.email,
       from: "realgar@raader.me",
       subject: `Payment notification for ${payment.name}`,
-      text: `You are about to be charged ${payment.price}${payment.currency} for ${payment.name}`,
+      text: `You are about to be charged ${payment.price} ${
+        user.settings?.currency || "USD"
+      } for ${payment.name}`,
     });
   });
 }
