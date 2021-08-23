@@ -42,6 +42,22 @@ describe("user model", () => {
     it("should create a user without a password", async () => {
       await expect(userModel.create(user)).to.be.fulfilled;
     });
+
+    it("should create a user with currency setting", async () => {
+      user.settings = { currency: "USD" };
+      await expect(userModel.create(user)).to.be.fulfilled;
+    });
+
+    it("should create a user with default currency usd", async () => {
+      await expect(userModel.create(user))
+        .to.eventually.have.property("settings")
+        .to.have.property("currency");
+    });
+
+    it("should not create a user with invalid currency ", async () => {
+      user.settings = { currency: "mahtmu" };
+      await expect(userModel.create(user)).to.be.rejectedWith(/settings/);
+    });
   });
 
   describe("read", () => {

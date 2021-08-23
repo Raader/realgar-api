@@ -13,12 +13,29 @@ export default class UserModel extends DatabaseModel<User> {
           return typeof val === "string" && val.length > 8 && val.length < 200;
         return true;
       },
+      settings: (val) => {
+        if (val) {
+          return val.currency
+            ? typeof val.currency === "string" && val.currency.length === 3
+            : true;
+        }
+        return true;
+      },
     });
   }
 
   async create(user: User): Promise<User | undefined> {
     if (user.password)
-      user = { ...user, password: await bcrypt.hash(user.password, 10) };
+      user = {
+        ...user,
+        password: await bcrypt.hash(user.password, 10),
+        settings: {
+          ...user.settings,
+          currency: user.settings?.currency
+            ? user.settings.currency.toUpperCase()
+            : "USD",
+        },
+      };
     return super.create(user);
   }
 
