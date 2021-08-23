@@ -101,34 +101,6 @@ describe("recurring payment model", () => {
       await expect(paymentModel.create(payment)).to.be.rejectedWith(/icon/);
     });
 
-    it("should create a payment with a currency field", async () => {
-      payment.currency = "TRY";
-      await expect(paymentModel.create(payment)).to.be.fulfilled;
-    });
-
-    it("should not create a payment with less than a 3 digit currency", async () => {
-      payment.currency = "TR";
-      await expect(paymentModel.create(payment)).to.be.rejectedWith(/currency/);
-    });
-
-    it("should not create a payment with more than a 3 digit currency", async () => {
-      payment.currency = "TRYD";
-      await expect(paymentModel.create(payment)).to.be.rejectedWith(/currency/);
-    });
-
-    it("should save payment currency in uppercase", async () => {
-      payment.currency = "try";
-      await expect(paymentModel.create(payment))
-        .eventually.property("currency")
-        .to.equal("TRY");
-    });
-
-    it("should default to USD in currency on payments", async () => {
-      await expect(paymentModel.create(payment))
-        .eventually.property("currency")
-        .to.equal("USD");
-    });
-
     it("should have last payment date on create", async () => {
       await expect(paymentModel.create(payment)).to.eventually.have.property(
         "lastDate"
