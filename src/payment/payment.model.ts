@@ -26,12 +26,6 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
         }
         return true;
       },
-      currency: (val: any) => {
-        if (val) {
-          return typeof val === "string" && val.length === 3;
-        }
-        return true;
-      },
       lastNotified: (val: any) => {
         if (val) {
           const date = new Date(val);
@@ -83,7 +77,6 @@ export default class RecurringPaymentModel extends DatabaseModel<RecurringPaymen
       startingDate: payment.startingDate
         ? new Date(payment.startingDate)
         : new Date(),
-      currency: payment.currency ? payment.currency.toUpperCase() : "USD",
     };
     const document = await super.create(payment);
 
