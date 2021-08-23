@@ -29,13 +29,13 @@ export default class UserModel extends DatabaseModel<User> {
       user = {
         ...user,
         password: await bcrypt.hash(user.password, 10),
-        settings: {
-          ...user.settings,
-          currency: user.settings?.currency
-            ? user.settings.currency.toUpperCase()
-            : "USD",
-        },
       };
+    user.settings = {
+      ...user.settings,
+      currency: user.settings?.currency
+        ? user.settings.currency.toUpperCase()
+        : "USD",
+    };
     return super.create(user);
   }
 
