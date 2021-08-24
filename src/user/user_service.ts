@@ -20,6 +20,13 @@ export default class UserService {
     return this.userModel.readOne({ id });
   }
 
+  async updateUserById(
+    id: string,
+    update: Partial<User>
+  ): Promise<User | undefined> {
+    return this.userModel.updateOne({ id }, update);
+  }
+
   async forEach(
     fn: (document: User) => void,
     filter?: Partial<User>,
