@@ -41,6 +41,19 @@ app.get("/user", async (req, res, next) => {
   }
 });
 
+app.put("/user/settings", async (req, res, next) => {
+  const userId = req.session?.userId;
+  try {
+    const user = await userService.updateUserById(userId, {
+      settings: req.body,
+    });
+    if (!user) return res.status(401).end();
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.delete("/session", async (req, res, next) => {
   req.session = null;
   res.send("OK");
