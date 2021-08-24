@@ -5,5 +5,6 @@ export default interface User {
   password?: string;
   settings?: {
     currency?: string;
+    notification?: boolean;
   };
 }

@@ -15,9 +15,12 @@ export default class UserModel extends DatabaseModel<User> {
       },
       settings: (val) => {
         if (val) {
-          return val.currency
-            ? typeof val.currency === "string" && val.currency.length === 3
-            : true;
+          return (
+            (val.currency
+              ? typeof val.currency === "string" && val.currency.length === 3
+              : true) &&
+            (val.notification ? typeof val.notification === "boolean" : true)
+          );
         }
         return true;
       },
@@ -35,6 +38,7 @@ export default class UserModel extends DatabaseModel<User> {
       currency: user.settings?.currency
         ? user.settings.currency.toUpperCase()
         : "USD",
+      notification: user.settings?.notification || true,
     };
     return super.create(user);
   }

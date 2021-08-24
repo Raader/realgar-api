@@ -58,6 +58,24 @@ describe("user model", () => {
       user.settings = { currency: "mahtmu" };
       await expect(userModel.create(user)).to.be.rejectedWith(/settings/);
     });
+
+    it("should create user with setting notification false", async () => {
+      user.settings = { notification: false };
+      await expect(userModel.create(user)).to.be.fulfilled;
+    });
+
+    it("should not reate user with a not boolean notification setting", async () => {
+      //@ts-ignore
+      user.settings = { notification: "mahmt" };
+      await expect(userModel.create(user)).to.be.rejectedWith(/settings/);
+    });
+
+    it("should create user with setting notification true default", async () => {
+      await expect(userModel.create(user))
+        .eventually.property("settings")
+        .property("notification")
+        .to.equal(true);
+    });
   });
 
   describe("read", () => {
