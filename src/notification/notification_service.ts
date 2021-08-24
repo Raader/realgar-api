@@ -58,6 +58,7 @@ export default class PaymentNotificationService {
     fn: (user: User, payment: RecurringPayment) => void
   ): Promise<void> {
     return this.userService.forEach((user) => {
+      if (!user.settings?.notification) return;
       this.paymentService.forEach(
         (payment) => {
           fn(user, payment);
