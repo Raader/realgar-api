@@ -4,8 +4,9 @@ import userService from "../user";
 import PaymentNotificationService from "./notification_service";
 
 const delay = Number(process.env.NOTIFICATION_INTERVAL) || 300000;
+console.log(`notification interval is ${delay}ms`);
 
-let interval: NodeJS.Timer;
+let interval: NodeJS.Timer | undefined;
 
 const notificationService = new PaymentNotificationService(
   userService,
@@ -15,6 +16,7 @@ const notificationService = new PaymentNotificationService(
 function handleInterval() {
   console.log("started sending notifications");
   notificationService.sendNotifications((user, payment) => {
+    console.log(`sent notifications to user: ${user.username}`);
     emailService.sendMail({
       to: user.email,
       from: "realgar@raader.me",
@@ -27,9 +29,13 @@ function handleInterval() {
 }
 
 export function startNotificationInterval(): void {
+  if (interval) return;
   interval = setInterval(handleInterval, delay);
 }
 
 export function stopNotificationInterval(): void {
-  clearInterval(interval);
+  if (interval) {
+    clearInterval(interval);
+    interval = undefined;
+  }
 }
