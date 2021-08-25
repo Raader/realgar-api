@@ -6,16 +6,16 @@ import UserService from "../user/user_service";
 export default class PaymentNotificationService {
   private userService: UserService;
   private paymentService: RecurringPaymentService;
-  private offset: number;
+  private defaultOffset: number;
 
   constructor(
     userService: UserService,
     paymentService: RecurringPaymentService,
-    offset?: number
+    defaultOffset?: number
   ) {
     this.userService = userService;
     this.paymentService = paymentService;
-    this.offset = offset || 1000 * 60 * 60 * 24 * 2;
+    this.defaultOffset = defaultOffset || 1000 * 60 * 60 * 24 * 2;
   }
 
   sendNotifications = async (
@@ -23,7 +23,7 @@ export default class PaymentNotificationService {
     now?: Date
   ): Promise<void> => {
     const currentDate = now || new Date();
-    const offset = this.offset;
+    const defaultOffset = this.defaultOffset;
 
     function paymentHasBeenNotified(
       payment: RecurringPayment
@@ -35,17 +35,21 @@ export default class PaymentNotificationService {
       );
     }
 
-    function paymentShouldBeNotified(payment: RecurringPayment) {
+    function paymentShouldBeNotified(payment: RecurringPayment, user: User) {
       return (
         payment.id &&
         payment.nextDate &&
-        payment.nextDate?.getTime() - offset <= currentDate.getTime()
+        payment.nextDate?.getTime() -
+          (user.settings?.notificationOffset
+            ? user.settings?.notificationOffset * 1000 * 60 * 60 * 24
+            : defaultOffset) <=
+          currentDate.getTime()
       );
     }
 
     return this.forEachPaymentOfUser((user, payment) => {
       if (paymentHasBeenNotified(payment)) return;
-      if (payment.id && paymentShouldBeNotified(payment)) {
+      if (payment.id && paymentShouldBeNotified(payment, user)) {
         this.paymentService.updateById(payment.id, {
           lastNotified: currentDate,
         });
