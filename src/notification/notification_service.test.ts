@@ -7,12 +7,13 @@ import UserModel from "../user/user.model";
 import InMemoryDatabaseCollection from "../db/memory_collection";
 import RecurringPaymentModel from "../payment/payment.model";
 import RecurringPaymentService from "../payment/payment_service";
+import { useFakeTimers } from "sinon";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe("notification service", () => {
-  xit("should send notifications", async () => {
+  it("should send notifications", async () => {
     const userCollection = new InMemoryDatabaseCollection();
     const userModel = new UserModel(userCollection);
     const userService = new UserService(userModel);
@@ -26,7 +27,12 @@ describe("notification service", () => {
     );
 
     userCollection.items = [
-      { id: "1", username: "faruk", email: "faruk@mail.com" },
+      {
+        id: "1",
+        username: "faruk",
+        email: "faruk@mail.com",
+        settings: { notification: true },
+      },
     ];
     paymentCollection.items = [
       {
@@ -57,6 +63,8 @@ describe("notification service", () => {
     ];
 
     const now = new Date("2021-08-22");
+
+    const clock = useFakeTimers(now.getTime());
     const sent: any = [];
     await notificationService.sendNotifications((user, payment) => {
       sent.push(payment);
@@ -65,5 +73,6 @@ describe("notification service", () => {
 
     expect(sent.length).to.equal(1);
     expect(sent[0]).property("name").to.equal("spotify subscription");
+    clock.restore();
   });
 });
