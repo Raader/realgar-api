@@ -6,5 +6,6 @@ export default interface User {
   settings?: {
     currency?: string;
     notification?: boolean;
+    notificationOffset?: number;
   };
 }

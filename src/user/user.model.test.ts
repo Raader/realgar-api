@@ -44,7 +44,11 @@ describe("user model", () => {
     });
 
     it("should create a user with currency setting", async () => {
-      user.settings = { currency: "USD" };
+      user.settings = {
+        currency: "USD",
+        notification: true,
+        notificationOffset: 2,
+      };
       await expect(userModel.create(user)).to.be.fulfilled;
     });
 
@@ -55,18 +59,30 @@ describe("user model", () => {
     });
 
     it("should not create a user with invalid currency ", async () => {
-      user.settings = { currency: "mahtmu" };
+      user.settings = {
+        currency: "mahtmu",
+        notification: true,
+        notificationOffset: 2,
+      };
       await expect(userModel.create(user)).to.be.rejectedWith(/settings/);
     });
 
     it("should create user with setting notification false", async () => {
-      user.settings = { notification: false };
+      user.settings = {
+        notification: false,
+        currency: "USD",
+        notificationOffset: 2,
+      };
       await expect(userModel.create(user)).to.be.fulfilled;
     });
 
     it("should not reate user with a not boolean notification setting", async () => {
-      //@ts-ignore
-      user.settings = { notification: "mahmt" };
+      user.settings = {
+        //@ts-ignore
+        notification: "mahmt",
+        currency: "USD",
+        notificationOffset: 2,
+      };
       await expect(userModel.create(user)).to.be.rejectedWith(/settings/);
     });
 
@@ -75,6 +91,24 @@ describe("user model", () => {
         .eventually.property("settings")
         .property("notification")
         .to.equal(true);
+    });
+
+    it("should create user with setting notification offset set to 2", async () => {
+      user.settings = {
+        notification: true,
+        currency: "USD",
+        notificationOffset: 2,
+      };
+      await expect(userModel.create(user)).to.be.fulfilled;
+    });
+
+    it("should not create user with setting notification offset set to 0", async () => {
+      user.settings = {
+        notification: true,
+        currency: "USD",
+        notificationOffset: -1,
+      };
+      await expect(userModel.create(user)).to.be.rejectedWith(/settings/);
     });
   });
 
