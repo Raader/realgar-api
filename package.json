@@ -27,6 +27,7 @@
     "@types/lodash": "^4.14.172",
     "@types/mocha": "^9.0.0",
     "@types/nodemailer": "^6.4.4",
+    "@types/sinon": "^10.0.2",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
     "chai": "^4.3.4",
@@ -47,6 +48,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^4.1.0",
     "nanoid": "^3.1.23",
-    "nodemailer": "^6.6.3"
+    "nodemailer": "^6.6.3",
+    "sinon": "^11.1.2"
   }
 }
