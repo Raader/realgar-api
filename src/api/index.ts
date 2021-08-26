@@ -5,6 +5,7 @@ import oauthRoutes from "./oauth.routes";
 import authRoutes from "./auth.routes";
 import paymentRoutes from "./payment.routes";
 import userService from "../user";
+import { getTemplatesFromCollection } from "../templates";
 
 const app = express();
 
@@ -57,6 +58,20 @@ app.put("/user/settings", async (req, res, next) => {
 app.delete("/session", async (req, res, next) => {
   req.session = null;
   res.send("OK");
+});
+
+app.get("/templates", async (req, res, next) => {
+  const userId = req.session?.userId;
+  try {
+    const user = await userService.readUserById(userId);
+    if (!user) return res.status(401).end();
+    if (!user.settings?.currency)
+      throw new Error("need currency to get templates");
+    const templates = await getTemplatesFromCollection(user.settings?.currency);
+    res.json(templates);
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use((err: any, req: any, res: any, next: any) => {
