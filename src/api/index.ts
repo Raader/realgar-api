@@ -6,11 +6,13 @@ import authRoutes from "./auth.routes";
 import paymentRoutes from "./payment.routes";
 import userService from "../user";
 import { getTemplatesFromCollection } from "../templates";
+import compression from "compression";
 
 const app = express();
 
 app.set("trust proxy", 1);
 //middlewares
+app.use(compression());
 const clientURL = process.env.CLIENT_URL;
 const origin = [];
 if (clientURL) origin.push(clientURL);
